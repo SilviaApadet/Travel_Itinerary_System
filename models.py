@@ -1,8 +1,15 @@
-from sqlalchemy import Column, Integer, String, Float, ForeignKey
-from sqlalchemy.orm import declarative_base, relationship
+from sqlalchemy import Column, Integer, String, Float, ForeignKey, create_engine
+from sqlalchemy.orm import relationship, sessionmaker
+from sqlalchemy.ext.declarative import declarative_base
 
 #Create a base class
 Base= declarative_base()
+# Define the database connection
+DATABASE_URL = "sqlite:///travel_itinerary.db"
+engine = create_engine(DATABASE_URL)
+
+# Create a session factory
+SessionLocal = sessionmaker(bind=engine)
 
 #Define the Travel model
 class User(Base):
@@ -68,3 +75,6 @@ class Expense(Base):
 
     def __repr__(self):
          return f"<Expense(id={self.id},amount={self.amount},category='{self.category}',trip_id={self.trip_id})>"
+    # Create all tables in the database
+if __name__ == "__main__":
+    Base.metadata.create_all(engine)
