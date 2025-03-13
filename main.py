@@ -34,7 +34,10 @@ def create_trip(user):
     session.commit()
     print(f"Trip '{trip_name}' created successfully!\n")
     return trip
-
+#read :Retrieve all the trips
+all_trips = session.query(Trip).all()
+for trip in all_trips:
+    print(f"id:{trip.id}, name:{trip.name}"
 def add_destination(trip):
     """Adds a destination to a trip."""
     destination_name = input("Enter destination name: ")
