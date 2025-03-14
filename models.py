@@ -17,7 +17,8 @@ class User(Base):
      id=Column(Integer, primary_key=True)
      name=Column(String(100),nullable=False)
      email=Column(String(100),nullable=False)
-
+     phone_number=Column(String(15),unique=True)
+     
      trips = relationship("Trip", back_populates="user")
 
      def __repr_(self):
