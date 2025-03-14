@@ -96,7 +96,7 @@ def delete_trip(trip_id):
 @click.argument('user_id', type=int)
 def delete_user(user_id):
     """Delete a user"""
-    user = session.query(User).filter_by(id=user_id).first()
+    user = session.delete(User, synchronize_session="fetch").filter_by(id=user_id).first()
     if not user:
         click.echo("User not found!")
         return
@@ -151,7 +151,7 @@ def create_trip(user):
 def add_destination(trip):
     """Adds a destination to a trip."""
     destination_name = input("Enter destination name: ")
-    destination = Destination(name=destination_name, trip_id=trip.id)
+    destination = Destination(name=destination_name,trip_id=trip.id)
     session.add(destination)
     session.commit()
     print(f"Destination '{destination_name}' added to trip '{trip.name}'!\n")
