@@ -193,38 +193,62 @@ def main():
         print("2. Add a destination to a trip")
         print("3. Add an expense")
         print("4. View total trip expenses")
-        print("5. Exit")
+        print("5. Add new user")
+        print("6. List users")
+        print("7. Delete existing user")
+        print("8. Delete existing trips")
+        print("9. List trips")
+        print("10. Add activity")
+        print("11. Calculate total expense")
+        print("12. Exit")
 
         choice = input("Enter your choice: ")
 
         if choice == "1":
             trip = create_trip(user)
+
         elif choice == "2":
-            trip_id = int(input("Enter trip ID: "))
-            trip = session.query(Trip).filter_by(id=trip_id).first()
-            if trip:
-                add_destination(trip)
-            else:
-                print("Trip not found!")
+            add_destination(trip)
+
         elif choice == "3":
-            trip_id = int(input("Enter trip ID: "))
-            trip = session.query(Trip).filter_by(id=trip_id).first()
-            if trip:
-                add_expense(trip)
-            else:
-                print("Trip not found!")
+            add_expense(trip)
+
         elif choice == "4":
-            trip_id = int(input("Enter trip ID: "))
-            trip = session.query(Trip).filter_by(id=trip_id).first()
-            if trip:
-                view_total_expense(trip)
-            else:
-                print("Trip not found!")
+            view_total_expense(trip)
+
         elif choice == "5":
-            print("Goodbye!")
+            add_user()
+
+        elif choice == "6":
+            list_users()
+
+        elif choice == "7":
+            user_id = int(input("Enter User ID to delete: "))
+            delete_user(user_id)
+
+        elif choice == "8":
+            trip_id = int(input("Enter Trip ID to delete: "))
+            delete_trip(trip_id)
+
+        elif choice == "9":
+            list_trips()
+
+        elif choice == "10":
+            destination_id = int(input("Enter Destination ID: "))
+            name = input("Enter activity name: ")
+            cost = float(input("Enter activity cost: "))
+            add_activity(name, destination_id, cost)
+
+        elif choice == "11":
+            trip_id = int(input("Enter Trip ID: "))
+            calculate_trip_expense(trip_id)
+
+        elif choice == "12":
+            print("Exiting program.")
             break
+
         else:
-            print("Invalid choice! Please try again.")
+            print("Invalid choice. Please try again.")
 
 if __name__ == "__main__":
     main()
