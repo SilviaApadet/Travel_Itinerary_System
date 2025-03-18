@@ -18,7 +18,7 @@ class User(Base):
      name=Column(String(100),nullable=False)
      email=Column(String(100),nullable=True)
      phone_number=Column(String(15),unique=True)
-     
+     current_location = Column(String, nullable=True)
      trips = relationship("Trip", back_populates="user")
 
      def __repr__(self):
