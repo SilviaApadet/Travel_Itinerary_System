@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, Float, ForeignKey, create_engine
 from sqlalchemy.orm import relationship, sessionmaker
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import declarative_base
 
 #Create a base class
 Base= declarative_base()
@@ -16,12 +16,12 @@ class User(Base):
      __tablename__='users'
      id=Column(Integer, primary_key=True)
      name=Column(String(100),nullable=False)
-     email=Column(String(100),nullable=False)
+     email=Column(String(100),nullable=True)
      phone_number=Column(String(15),unique=True)
      
      trips = relationship("Trip", back_populates="user")
 
-     def __repr_(self):
+     def __repr__(self):
           return f"<User(id={self.id},name='{self.name}',email='{self.email}')>"
      
 class Trip(Base):
@@ -31,9 +31,9 @@ class Trip(Base):
      name=Column(String, nullable=False)
      user_id= Column(Integer, ForeignKey('users.id'))
 
-     user= relationship("Users", back_populates="trips")
+     user= relationship("User", back_populates="trips")
      destinations= relationship("Destination", back_populates="trip")
-     expense= relationship("Expense", back_populates="trip")
+     expenses= relationship("Expense", back_populates="trip")
 
      def __repr__(self):
           return f"<Trip(id={self.id},name='{self.name}',user_id={self.user_id})>"
@@ -62,7 +62,7 @@ class Activity(Base):
     destination = relationship("Destination", back_populates="activities")
 
     def __repr__(self):
-         return f"<Activity(id={self.id},name='{self.name},destination_id={self.destination_id})>"
+         return f"<Activity(id={self.id},name='{self.name}',destination_id={self.destination_id})>"
     
 class Expense(Base):
     __tablename__ = 'expenses'

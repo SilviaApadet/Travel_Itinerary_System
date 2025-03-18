@@ -40,16 +40,25 @@ def list_users():
     for user in users:
         click.echo(f"ID: {user.id}, Name: {user.name}")
 
-# ✅ Add Destination
-@click.command()
-@click.argument('name')
-@click.argument('country')
-def add_destination(name, country):
-    """Add a new destination"""
-    destination = Destination(name=name, country=country)
+# Add Destination
+def add_destination_to_trip(trip):
+    """Adds a destination to a trip."""
+    destination_name = input("Enter destination name: ")
+    destination = Destination(name=destination_name, trip_id=trip.id)
     session.add(destination)
     session.commit()
-    click.echo(f"Destination '{name}, {country}' added successfully!")
+    print(f"Destination '{destination_name}' added to trip '{trip.name}'!\n")
+
+    # Click command version of add_destination
+@click.command()
+@click.argument('name')
+def add_destination(name):
+    """Add a new destination"""
+    destination = Destination(name=name)
+    session.add(destination)
+    session.commit()
+    click.echo(f"Destination '{name}' added successfully!")
+
 
 # ✅ Add Activity
 @click.command()
@@ -96,7 +105,7 @@ def delete_trip(trip_id):
 @click.argument('user_id', type=int)
 def delete_user(user_id):
     """Delete a user"""
-    user = session.delete(User, synchronize_session="fetch").filter_by(id=user_id).first()
+    user = session.query(User).filter_by(id=user_id).first()
     if not user:
         click.echo("User not found!")
         return
@@ -104,6 +113,7 @@ def delete_user(user_id):
     session.delete(user)
     session.commit()
     click.echo(f"User ID {user_id} deleted.")
+
 #  Calculate Total Trip Expense
 @click.command()
 @click.argument('trip_id', type=int)
@@ -114,9 +124,7 @@ def calculate_trip_expense(trip_id):
         click.echo("Trip not found!")
         return
 
-    activities = session.query(Activity).filter_by(destination_id=trip.destination_id).all()
-    total_cost = sum(activity.cost for activity in activities)
-    
+    total_cost = session.query(func.sum(Expense.amount)).filter_by(trip_id=trip.id).scalar() or 0
     click.echo(f"Total Expense for Trip ID {trip_id}: ${total_cost:.2f}")
 
 #  Add Commands to CLI
@@ -133,11 +141,16 @@ cli.add_command(calculate_trip_expense)
 def create_user():
     """Prompts the user to create a new traveler profile."""
     name = input("Enter your name: ")
-    user = User(name=name)
+    email = input("Enter your email: ") 
+    print(f"Welcome, {name}! Your email is {email}.") 
+    phone_number = input("Enter your phone number (optional): ") or None
+
+    user = User(name=name, email=email, phone_number=phone_number)  
     session.add(user)
     session.commit()
     print(f"User {name} has been created successfully!\n")
     return user
+
 
 def create_trip(user):
     """Allows a user to create a trip."""
